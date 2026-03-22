@@ -1,0 +1,41 @@
+workflows:
+  android-release:
+    name: FFW Ausweis – Android APK
+    max_build_duration: 30
+    environment:
+      flutter: stable
+      android_signing:
+        - ffw_keystore          # In Codemagic unter "Code signing" hinterlegen
+                                # (beim ersten Test einfach weglassen → debug APK)
+      vars:
+        PACKAGE_NAME: "de.ffw.ausweis"
+
+    scripts:
+      - name: Flutter Version prüfen
+        script: flutter --version
+
+      - name: Abhängigkeiten installieren
+        script: flutter pub get
+
+      - name: Code analysieren
+        script: flutter analyze
+        ignore_failure: true    # Build läuft auch bei Warnungen durch
+
+      - name: APK bauen (Release)
+        script: |
+          flutter build apk \
+            --release \
+            --build-name=1.0.0 \
+            --build-number=$(($(date +%s)))
+
+    artifacts:
+      - build/app/outputs/flutter-apk/app-release.apk
+      - build/app/outputs/flutter-apk/app-debug.apk   # Fallback
+
+    publishing:
+      email:
+        recipients:
+          - deine@email.de      # ← Hier deine E-Mail eintragen
+        notify:
+          success: true
+          failure: true
