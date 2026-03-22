@@ -4,32 +4,30 @@ workflows:
     max_build_duration: 30
     environment:
       flutter: stable
-      
-      vars:
-        PACKAGE_NAME: "de.ffw.ausweis"
 
     scripts:
-      - name: Flutter Version prüfen
+      - name: Flutter Version
         script: flutter --version
 
       - name: Abhängigkeiten installieren
         script: flutter pub get
 
-      - name: Code analysieren
-        script: flutter analyze
-        ignore_failure: true    # Build läuft auch bei Warnungen durch
-
       - name: APK bauen
         script: |
           flutter build apk --debug --no-tree-shake-icons
+          echo "=== APK Suche ==="
+          find . -name "*.apk" 2>/dev/null
+          cp build/app/outputs/flutter-apk/app-debug.apk $CM_BUILD_DIR/app-debug.apk || true
 
     artifacts:
-      - build/app/outputs/flutter-apk/app-debug.apk   # Fallback
+      - build/app/outputs/flutter-apk/*.apk
+      - build/app/outputs/**/*.apk
+      - "**/*.apk"
 
     publishing:
       email:
         recipients:
-          - deine@email.de      # ← Hier deine E-Mail eintragen
+          - enricopaeck@t-online.de
         notify:
           success: true
           failure: true
