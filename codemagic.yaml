@@ -19,12 +19,9 @@ workflows:
         script: flutter analyze
         ignore_failure: true    # Build läuft auch bei Warnungen durch
 
-      - name: APK bauen (Release)
+      - name: APK bauen
         script: |
-          flutter build apk \
-            --release \
-            --build-name=1.0.0 \
-            --build-number=$(($(date +%s)))
+          flutter build apk --debug --no-tree-shake-icons
 
     artifacts:
       - build/app/outputs/flutter-apk/app-release.apk
