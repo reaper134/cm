@@ -1,4 +1,0 @@
-// Root build.gradle – mit neuem declarative plugin Ansatz (Flutter 3.x+)
-tasks.register("clean", Delete) {
-    delete rootProject.buildDir
-}
